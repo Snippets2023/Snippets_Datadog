@@ -1,14 +1,9 @@
-# Usa una imagen base con Java 17
-FROM adoptopenjdk:17-jdk-hotspot
-
-# Establece el directorio de trabajo en /app
-WORKDIR /app
-
-# Copia el archivo JAR generado por Gradle en el directorio /app
-COPY build/libs/*.jar app.jar
-
-# Expone el puerto 8080 en el contenedor
+FROM gradle:7.6.1-jdk17 AS build
+COPY  . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle assemble
+FROM openjdk:17.0-slim
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación cuando se inicie el contenedor
-CMD ["java", "-jar", "app.jar"]
+RUN mkdir /app
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production","/app/spring-boot-application.jar"]
