@@ -1,5 +1,5 @@
 # Usa una imagen base con Java 17
-FROM adoptopenjdk:17-jdk
+FROM adoptopenjdk:17
 
 # Establece el directorio de trabajo en /app
 WORKDIR /app
